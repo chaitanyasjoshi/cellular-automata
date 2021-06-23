@@ -1,0 +1,14 @@
+{
+  "name": "module_pwd",
+  "version": "1.0.0",
+  "description": "Module responsible for hashing master password",
+  "main": "caHash.js",
+  "scripts": {
+    "start": "node caHash.js"
+  },
+  "author": "Chaitanya Joshi",
+  "license": "ISC",
+  "dependencies": {
+    "utf8": "^3.0.0"
+  }
+}
