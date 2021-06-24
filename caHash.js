@@ -1,25 +1,11 @@
-class CellularAutomaton1D {
+class CellularAutomata {
   constructor() {
-    this._CurrentState = [];
-    this._NextState = [];
-    this._Rule = 0;
-    this._Key = this.stringToBinary(
+    this.currentState = [];
+    this.nextState = [];
+    this.rule = 0;
+    this.key = this.stringToBinary(
       'thisisaverystronghashingkeynsdklfnskfbfuiebaajfbgndfjknkhawuhf'
     );
-  }
-
-  // Getters and setters
-  get CurrentState() {
-    return this._CurrentState;
-  }
-  get NextState() {
-    return this._NextState;
-  }
-  get Rule() {
-    return this._Rule;
-  }
-  set Rule(Rule) {
-    this._Rule = Rule;
   }
 
   // Calculate value of curr bit based on CA rule and neighbourhood
@@ -28,38 +14,38 @@ class CellularAutomaton1D {
   }
 
   calculateNextState() {
-    for (let i = 0; i < this._CurrentState.length; i++) {
-      let PrevIndex = i == 0 ? this._CurrentState.length - 1 : i - 1;
-      let NextIndex = i == this._CurrentState.length - 1 ? 0 : i + 1;
+    for (let i = 0; i < this.currentState.length; i++) {
+      let prevIndex = i == 0 ? this.currentState.length - 1 : i - 1;
+      let nextIndex = i == this.currentState.length - 1 ? 0 : i + 1;
 
-      this._NextState[i] = this.calculateBit(
-        this._CurrentState[PrevIndex],
-        this._CurrentState[i],
-        this._CurrentState[NextIndex]
+      this.nextState[i] = this.calculateBit(
+        this.currentState[prevIndex],
+        this.currentState[i],
+        this.currentState[nextIndex]
       );
     }
 
-    this._CurrentState = [...this._NextState];
-    this._NextState.length = 0;
+    this.currentState = [...this.nextState];
+    this.nextState.length = 0;
   }
 
-  iterate(Iterations) {
-    for (let Iteration = 1; Iteration <= Iterations; Iteration++) {
+  iterate(iterations) {
+    for (let i = 1; i <= iterations; i++) {
       this.calculateNextState();
     }
-    return this.CurrentState;
+    return this.currentState;
   }
 
-  hashCA(password) {
+  caHash(password) {
     // Convert password to binary
     const binaryPass = this.stringToBinary(password);
 
     // Add padding and convert string to integer array
     const padedPass = this.addPadding(binaryPass);
-    const padedKey = this.addPadding(this._Key);
+    const padedKey = this.addPadding(this.key);
 
     // Apply desired cellular automata rule
-    const processedPass = this.applyCARule(padedPass, 30);
+    const processedPass = this.applyCaRule(padedPass, 30);
 
     // Use transformation function
     console.log(
@@ -75,9 +61,9 @@ class CellularAutomaton1D {
       : msg.split('');
   }
 
-  applyCARule(msg, rule) {
-    this._CurrentState = msg;
-    this._Rule = rule;
+  applyCaRule(msg, rule) {
+    this.currentState = msg;
+    this.rule = rule;
     return this.iterate(1000);
   }
 
@@ -163,20 +149,20 @@ class CellularAutomaton1D {
 
   j(x, y, z) {
     return this.and(
-      this.xor(this.rotn(x, 47), this.applyCARule(this.rotn(y, 37), 30)),
+      this.xor(this.rotn(x, 47), this.applyCaRule(this.rotn(y, 37), 30)),
       this.rotn(z, 17)
     );
   }
 
   g(x, y, z) {
     return this.xor(
-      this.or(this.applyCARule(this.applyCARule(x, 30), 134), y),
-      this.and(this.applyCARule(z, 30), x)
+      this.or(this.applyCaRule(this.applyCaRule(x, 30), 134), y),
+      this.and(this.applyCaRule(z, 30), x)
     );
   }
 
   f(x, y) {
-    return this.xor(this.applyCARule(x, 30), y);
+    return this.xor(this.applyCaRule(x, 30), y);
   }
 
   h(x, y) {
@@ -186,7 +172,7 @@ class CellularAutomaton1D {
   i(x, y) {
     return this.xor(
       this.rotn(x, 41),
-      this.applyCARule(this.applyCARule(this.rotn(y, 31), 30), 134)
+      this.applyCaRule(this.applyCaRule(this.rotn(y, 31), 30), 134)
     );
   }
 
@@ -225,5 +211,5 @@ class CellularAutomaton1D {
   }
 }
 
-CA1D = new CellularAutomaton1D();
-CA1D.hashCA('thisismypassword', 30);
+CA1D = new CellularAutomata();
+CA1D.caHash('thisismypassword', 30);
